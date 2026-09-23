@@ -766,7 +766,13 @@ class Servidor(SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(conteudo)))
         self.send_header("Last-Modified", modificado)
         if relativo.startswith("img/"):
+            # Imagem muda de nome ao ser trocada: pode ficar em cache tranquila.
             self.send_header("Cache-Control", "public, max-age=3600")
+        else:
+            # HTML, CSS e JS mudam a cada atualização do site. Sem isto o
+            # navegador guarda a versão velha por conta própria e o dono acha
+            # que a alteração não subiu. "no-cache" revalida e devolve 304.
+            self.send_header("Cache-Control", "no-cache")
         self.end_headers()
         self.wfile.write(conteudo)
 

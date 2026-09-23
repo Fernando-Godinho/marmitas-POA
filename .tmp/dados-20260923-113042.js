@@ -1,10 +1,10 @@
 /* ------------------------------------------------------------------------
    dados.js — fonte de verdade do cardápio, combos, cupons e configurações.
-   Gerado pelo painel admin (admin.html) em 2026-09-23 14:30:42.
+   Gerado pelo painel admin (admin.html) em 2026-09-23 12:22:06.
    ------------------------------------------------------------------------ */
 window.DADOS = {
   "versao": 2,
-  "atualizadoEm": "2026-09-23 14:30:42",
+  "atualizadoEm": "2026-09-23 12:22:06",
   "loja": {
     "nome": "Marmitas POA",
     "slogan": "Caseira, de Porto Alegre",
@@ -34,7 +34,7 @@ window.DADOS = {
     {
       "id": "p1",
       "nome": "Frango Descabelado",
-      "categoria": "Primavera / verão",
+      "categoria": "Tradicional",
       "descricao": "Arroz, feijão e batata-doce",
       "kcal": 550,
       "semLactose": false,

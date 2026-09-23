@@ -291,6 +291,10 @@ em { font-style: normal; color: var(--orange); }
 .stars { letter-spacing: 3px; color: #d9a839; font-size: 12px; }
 
 .hero-art { position: relative; min-height: 420px; display: grid; place-items: center; will-change: transform; }
+
+/* A pilha tem exatamente a largura da moldura da foto: os cartões de frase se
+   posicionam em relação a ela, e não à altura da coluna (que muda com o texto). */
+.art-stack { position: relative; width: min(340px, 86%); }
 .art-halo {
   position: absolute;
   width: min(420px, 78%);
@@ -302,7 +306,7 @@ em { font-style: normal; color: var(--orange); }
 .art-card {
   position: relative;
   z-index: 2;
-  width: min(340px, 86%);
+  width: 100%;
   padding: 12px 12px 14px;
   border-radius: var(--radius-lg);
   background: var(--paper);
@@ -328,16 +332,40 @@ em { font-style: normal; color: var(--orange); }
 .float {
   position: absolute;
   z-index: 3;
+  width: 178px;
   padding: 12px 16px;
   border-radius: var(--radius);
   background: var(--paper);
   box-shadow: var(--shadow);
   animation: float 6s ease-in-out infinite;
 }
-.float b { display: block; font-family: var(--display); font-size: 17px; }
-.float small { font-size: 10px; color: var(--muted); }
-.float-a { left: 0; top: 12%; transform: rotate(-4deg); }
-.float-b { right: 0; bottom: 14%; animation-delay: 1.4s; transform: rotate(3deg); }
+/* Largura fixa e altura reservada: trocar de frase não muda o tamanho do cartão
+   (é o que evita o "pulo" na composição). */
+.float b {
+  display: block;
+  min-height: 1.2em;
+  font-family: var(--display);
+  font-size: 17px;
+  transition: opacity 0.24s var(--ease), transform 0.24s var(--ease);
+}
+.float small {
+  display: block;
+  min-height: 2.6em;
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--muted);
+  transition: opacity 0.24s var(--ease), transform 0.24s var(--ease);
+}
+
+/* Enquanto o texto troca, o conteúdo sai de cena e volta (não mexe no tamanho
+   do cartão, porque ele tem largura mínima definida). */
+.float.is-trocando b,
+.float.is-trocando small { opacity: 0; transform: translateY(-5px); }
+
+/* Presos à moldura da foto: esquerda no alto, direita embaixo, os dois por
+   fora da borda e nunca em cima da legenda. */
+.float-a { left: -7%; top: 3%; transform: rotate(-4deg); }
+.float-b { right: -7%; bottom: 18%; animation-delay: 1.4s; transform: rotate(3deg); }
 
 /* 5. Faixa e Perks ========================================================= */
 .marquee {
@@ -1016,9 +1044,11 @@ em { font-style: normal; color: var(--orange); }
   .art-halo { width: 232px; }
   .art-card { width: 232px; padding: 10px 10px 12px; }
   .art-caption { font-size: 9px; margin-top: 9px; }
-  .float { padding: 9px 12px; }
+  .float { padding: 9px 12px; width: 152px; }
   .float b { font-size: 15px; }
   .float small { font-size: 9.5px; }
+  .float-a { left: -5%; top: 2%; }
+  .float-b { right: -5%; bottom: 21%; }
 
   .marquee { padding: 12px 0; }
   .marquee-track { animation-duration: 26s; }

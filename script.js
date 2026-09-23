@@ -497,10 +497,11 @@ function addToCart(id, option, { silent = false, pratos = null } = {}) {
   count.classList.add("is-bump");
   setTimeout(() => count.classList.remove("is-bump"), 450);
 
+  // A gaveta do pedido não abre sozinha: quem clica em "Adicionar" quer seguir
+  // escolhendo. O retorno é o contador pulsando, o aviso e a barra do celular.
   if (!silent) {
     const item = CATALOG.get(String(id));
     toast(`${item.name} (${option}) no pedido`);
-    openCart();
   }
 }
 
@@ -883,7 +884,6 @@ function confirmarCombo() {
     fecharCombo();
     addToCart(item.id, comboForm.opcao, { pratos });
   }
-  openCart();
 }
 
 function ligarCombo() {
@@ -1157,6 +1157,66 @@ function setupMarquee() {
   $("#marqueeTrack").innerHTML = block + block;
 }
 
+/* -------------------------------------------- frases dos cartões do hero */
+// Os dois cartões sobre a foto trocam de frase sozinhos. Cada um tem sua lista e
+// seu ritmo, para não mudarem no mesmo instante, e a troca para quando o mouse
+// está em cima (dá tempo de ler) ou quando o sistema pede menos movimento.
+const FRASES_DOS_CARTOES = [
+  {
+    alvo: ".float-a",
+    intervalo: 5200,
+    frases: [
+      ["400 g ou 600 g", "do almoço leve ao dia de fome"],
+      ["Panela de casa", "tempero no ponto, sem pressa"],
+      ["Sai do freezer", "pronta em minutos no micro-ondas"],
+      ["52 pratos", "tradicional, light e vegetariano"],
+      ["Sem lactose", "tem opção marcada no cardápio"],
+    ],
+  },
+  {
+    alvo: ".float-b",
+    intervalo: 6600,
+    frases: [
+      ["Tempero de casa", "aqui em Porto Alegre"],
+      ["Feito hoje", "porcionado à mão na nossa cozinha"],
+      ["Entrega em POA", "grátis nos combos"],
+      ["Porção generosa", "do jeito que a gente come em casa"],
+      ["Quem entrega", "somos nós, aqui da cidade"],
+    ],
+  },
+];
+
+function setupCartoesDoHero() {
+  const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  FRASES_DOS_CARTOES.forEach(({ alvo, intervalo, frases }) => {
+    const cartao = document.querySelector(alvo);
+    if (!cartao || frases.length < 2) return;
+    const forte = cartao.querySelector("b");
+    const apoio = cartao.querySelector("small");
+    if (!forte || !apoio) return;
+
+    let indice = 0;
+    let pausado = false;
+    cartao.addEventListener("mouseenter", () => (pausado = true));
+    cartao.addEventListener("mouseleave", () => (pausado = false));
+
+    if (semMovimento) return; // quem pediu menos movimento fica com a primeira frase
+
+    setInterval(() => {
+      if (pausado || document.hidden) return;
+      indice = (indice + 1) % frases.length;
+      const [destaque, texto] = frases[indice];
+      cartao.classList.add("is-trocando");
+      setTimeout(() => {
+        forte.textContent = destaque;
+        apoio.textContent = texto;
+        cartao.classList.remove("is-trocando");
+      }, 240);
+    }, intervalo);
+  });
+}
+
 /* ------------------------------------------------------------------- boot */
 function bindEvents() {
   let debounce;
@@ -1310,6 +1370,7 @@ function init() {
   renderMenu();
   renderCart();
   setupMarquee();
+  setupCartoesDoHero();
   setupReveal();
   setupScrollEffects();
   setupHeroParallax();
