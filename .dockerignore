@@ -1,0 +1,31 @@
+# O que NUNCA entra na imagem.
+# Estes arquivos são dados seus, não código: eles vivem na VPS (volume) e não
+# podem viajar dentro de uma imagem que talvez vá para um registro público.
+
+# Banco de imagens e senha do painel
+marmitas.db
+marmitas.db-wal
+marmitas.db-shm
+config.json
+
+# Backup do dados.js e outros rascunhos
+.tmp/
+
+# Material de trabalho que não é site
+.agents/
+.legacy/
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Documentação e textos de apoio
+*.md
+
+# Sobras de Python e de editor
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+*.swp

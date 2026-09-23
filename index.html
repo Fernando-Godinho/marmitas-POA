@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#2f4a3a" />
+    <link rel="icon" id="favicon" href="img/favicon.svg" type="image/svg+xml" />
+    <meta name="description" content="Marmitas caseiras feitas na nossa cozinha, em Porto Alegre. 52 pratos, 400 g ou 600 g, opções light, vegetarianas e sem lactose. Entrega grátis nos combos." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Marmitas POA | Comida caseira feita em Porto Alegre" />
+    <meta property="og:description" content="Feito na nossa cozinha, aqui em Porto Alegre. Escolha os pratos, monte o pedido e receba em casa — entrega grátis nos combos." />
+    <meta property="og:locale" content="pt_BR" />
+    <title>Marmitas POA | Comida caseira feita em Porto Alegre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Marmitas POA Delivery",
+        "description": "Marmitas caseiras preparadas em Porto Alegre, congeladas no ponto e entregues na cidade. Cardápio com 52 pratos, em porções de 400 g ou 600 g.",
+        "servesCuisine": "Comida caseira brasileira",
+        "priceRange": "R$ 10 - R$ 60",
+        "telephone": "+5551993560070",
+        "areaServed": "Porto Alegre",
+        "sameAs": ["https://instagram.com/marmitaspoa"],
+        "hasMenu": { "@type": "Menu", "name": "Cardápio Marmitas POA" }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
+
+    <div class="aviso-bar" id="aviso" hidden></div>
+    <div class="rascunho-bar" id="rascunho" hidden>Pré-visualizando alterações não publicadas · <a href="admin.html">abrir painel</a></div>
+
+    <header class="topbar" id="topbar">
+      <a class="brand" href="#inicio" aria-label="Marmitas POA, início">
+        <span class="brand-mark" data-logo>POA</span>
+        <span class="brand-text"><strong data-loja-nome>Marmitas</strong><small data-loja-slogan>Caseira, de Porto Alegre</small></span>
+      </a>
+      <nav class="nav" id="nav" aria-label="Navegação principal">
+        <a href="#cardapio">Cardápio</a>
+        <a href="#combos">Combos</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#duvidas">Dúvidas</a>
+        <a href="#sobre">Contato</a>
+      </nav>
+      <div class="top-actions">
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileNav">
+          <span></span><span></span>
+        </button>
+        <a class="icon-link" data-link-whatsapp href="https://wa.me/5551993560070" target="_blank" rel="noreferrer" aria-label="WhatsApp da Marmitas POA">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.6 2 2.2 6.4 2.2 11.84c0 1.74.46 3.44 1.32 4.94L2 22l5.36-1.4a9.8 9.8 0 0 0 4.68 1.2c5.44 0 9.84-4.4 9.84-9.84S17.48 2 12.04 2Zm5.72 13.9c-.24.68-1.4 1.32-1.94 1.38-.54.06-1.02.16-2.86-.66-2.22-.98-3.6-3.3-3.72-3.46-.12-.16-.9-1.28-.9-2.44 0-1.16.6-1.72.82-1.96.22-.24.48-.3.64-.3l.46.02c.16 0 .36-.02.56.44l.76 1.86c.06.14.1.3.02.46l-.34.5c-.1.14-.22.28-.1.5.12.22.54.94 1.16 1.52.8.74 1.46.98 1.68 1.08.22.1.36.08.5-.06.14-.14.6-.7.76-.94.16-.24.32-.2.54-.12l1.78.86c.22.1.38.16.44.26.06.1.06.6-.18 1.16Z"/></svg>
+        </a>
+        <button class="cart-pill" id="cartButton" type="button" aria-label="Abrir meu pedido">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1.4 11.2a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8L5 7Zm3 0a4 4 0 0 1 8 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span>Meu pedido</span>
+          <b id="cartCount" data-empty="true">0</b>
+        </button>
+      </div>
+    </header>
+
+    <div class="overlay" id="menuOverlay" hidden></div>
+
+    <nav class="sheet" id="mobileNav" aria-label="Menu de navegação" hidden>
+      <div class="sheet-head">
+        <p class="eyebrow">Navegar</p>
+        <button class="icon-btn" id="closeMenu" type="button" aria-label="Fechar menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#combos">Combos</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#duvidas">Dúvidas</a>
+      <a href="#sobre">Contato</a>
+      <a class="btn btn-ghost btn-block" data-link-whatsapp href="https://wa.me/5551993560070" target="_blank" rel="noreferrer">Falar no WhatsApp</a>
+    </nav>
+
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero-copy">
+          <p class="chip reveal">Cozinha caseira em Porto Alegre <i></i> Entrega grátis nos combos</p>
+          <h1 class="reveal">Comida de casa, <em>feita em Porto Alegre.</em></h1>
+          <p class="hero-text reveal">Marmitas feitas na nossa cozinha, com tempero de casa e porção generosa. Congeladas no ponto: é só aquecer e almoçar bem nos dias em que ninguém tem tempo de cozinhar.</p>
+          <div class="hero-cta reveal">
+            <a class="btn btn-primary" href="#cardapio">Ver o cardápio
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </a>
+            <a class="btn btn-ghost" data-link-whatsapp href="https://wa.me/5551993560070" target="_blank" rel="noreferrer">Tirar dúvida no WhatsApp</a>
+          </div>
+          <div class="trust reveal">
+            <span class="stars" aria-hidden="true">★★★★★</span>
+            <span><b>52 pratos</b> no cardápio · feitos na nossa cozinha, em Porto Alegre</span>
+          </div>
+        </div>
+
+        <div class="hero-art reveal" id="heroArt">
+          <div class="art-halo" aria-hidden="true"></div>
+          <div class="art-card">
+            <img class="art-photo" src="img/marmita-padrao.jpg" width="861" height="900" fetchpriority="high" decoding="async"
+              alt="Marmita caseira com arroz, carne desfiada ao molho e legumes no pote" />
+            <p class="art-caption">Feito hoje <span>·</span> congelado no ponto</p>
+          </div>
+          <div class="float float-a"><b>400 g ou 600 g</b><small>do almoço leve ao dia de fome</small></div>
+          <div class="float float-b"><b>Tempero de casa</b><small>aqui em Porto Alegre</small></div>
+        </div>
+      </section>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track" id="marqueeTrack"></div>
+      </div>
+
+      <section class="perks" aria-label="Diferenciais">
+        <article class="perk reveal">
+          <span class="perk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 13.9 9l5.6 1.8-5.6 1.8L12 18l-1.9-5.4L4.5 10.8 10.1 9 12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+          <div><h3>Panela de casa</h3><p>Receita de casa e tempero no ponto, feitos aqui na nossa cozinha em Porto Alegre.</p></div>
+        </article>
+        <article class="perk reveal">
+          <span class="perk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+          <div><h3>Pronto em minutos</h3><p>Congeladas no ponto: é só aquecer e almoçar. Sem cozinhar, sem lavar panela, sem improvisar.</p></div>
+        </article>
+        <article class="perk reveal">
+          <span class="perk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h11v8H3V8Zm11 3h4l3 3v2h-7v-5ZM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+          <div><h3>Entrega em Porto Alegre</h3><p>Saímos da nossa cozinha aqui na cidade e chegamos na sua casa. Combos com frete grátis.</p></div>
+        </article>
+      </section>
+
+      <section class="menu" id="cardapio">
+        <div class="section-head">
+          <div class="section-title reveal">
+            <p class="eyebrow">Escolha por vontade</p>
+          <h2>O que tem para hoje</h2>
+          </div>
+          <div class="tools reveal">
+            <label class="search">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm6-2 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+              <input id="searchInput" type="search" placeholder="Buscar prato ou ingrediente" aria-label="Buscar prato ou ingrediente" autocomplete="off" />
+            </label>
+            <label class="select">
+              <span>Ordenar</span>
+              <select id="sortSelect" aria-label="Ordenar cardápio">
+                <option value="padrao">Sugeridos</option>
+                <option value="preco-asc">Menor preço</option>
+                <option value="preco-desc">Maior preço</option>
+                <option value="kcal-asc">Menos calorias</option>
+                <option value="nome">Nome A-Z</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="filters reveal">
+          <div class="filter-chips" id="filters" role="group" aria-label="Filtrar por categoria"></div>
+          <button class="chip-toggle" id="lactoseToggle" type="button" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-7 5-12 14-14 0 9-5 14-12 14H5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            Sem lactose
+          </button>
+        </div>
+
+        <p class="results" id="resultCount" aria-live="polite"></p>
+        <div class="menu-grid" id="menuGrid"></div>
+
+        <div class="empty" id="emptyState" hidden>
+          <h3>Nada por aqui ainda</h3>
+          <p>Não encontramos esse prato. Tente outro ingrediente ou volte para o cardápio completo.</p>
+          <button class="btn btn-ghost" id="clearFilters" type="button">Limpar filtros</button>
+        </div>
+
+        <div class="load-more-wrap">
+          <button class="btn btn-outline" id="loadMore" type="button" hidden>Carregar mais pratos</button>
+        </div>
+      </section>
+
+      <section class="combos" id="combos">
+        <div class="combo-intro reveal">
+          <p class="eyebrow">Para organizar a semana</p>
+          <h2>Quanto mais você leva,<br /><em>menos paga por marmita.</em></h2>
+          <p>É assim que a maioria dos clientes compra: escolhe o tamanho, fecha o combo e deixa o freezer pronto para as próximas semanas. Todos os combos têm entrega grátis em Porto Alegre.</p>
+          <ul class="combo-notes">
+            <li>Marmitas de 400 g ou 600 g</li>
+            <li>Frete grátis na cidade</li>
+            <li>Lasanhas e porções não entram no combo</li>
+          </ul>
+        </div>
+        <div class="combo-list" id="comboList"></div>
+      </section>
+
+      <section class="steps" id="como-funciona">
+        <div class="section-title center reveal"><p class="eyebrow">Simples assim</p><h2>Como funciona o pedido</h2></div>
+        <div class="step-grid">
+          <article class="step reveal"><span class="step-num">01</span><h3>Escolha os pratos</h3><p>Monte como quiser: 400 g ou 600 g, tradicionais, light, vegetarianas, lasanhas e porções. Pode misturar.</p></article>
+          <article class="step reveal"><span class="step-num">02</span><h3>Envie pelo WhatsApp</h3><p>Preencha nome, telefone e bairro. O site monta a mensagem inteira: você só confere e envia.</p></article>
+          <article class="step reveal"><span class="step-num">03</span><h3>Receba em casa</h3><p>Combinamos o dia e o pagamento na conversa — Pix, dinheiro ou cartão na entrega. Sem cadastro e sem burocracia.</p></article>
+        </div>
+      </section>
+
+      <section class="faq" id="duvidas">
+        <div class="section-title reveal"><p class="eyebrow">Ainda com dúvida?</p><h2>Perguntas frequentes</h2></div>
+        <div class="faq-list">
+          <details class="faq-item reveal"><summary>De onde vocês são?</summary><p>De Porto Alegre. A cozinha é caseira e fica aqui na cidade: as marmitas saem das nossas panelas, são porcionadas à mão e congeladas no ponto. Quem entrega é a gente mesmo.</p></details>
+          <details class="faq-item reveal"><summary>Como as marmitas são entregues?</summary><p>Congeladas, para durarem mais tempo na sua geladeira. A entrega é feita em Porto Alegre: os combos têm frete grátis e, nos pedidos avulsos, a taxa é confirmada pelo WhatsApp conforme o bairro.</p></details>
+          <details class="faq-item reveal"><summary>Qual tamanho escolher?</summary><p>A pequena tem 400 g e a grande 600 g. As calorias de cada prato estão no cardápio para ajudar na escolha do dia.</p></details>
+          <details class="faq-item reveal"><summary>Quais são as opções sem lactose?</summary><p>Vários pratos são marcados como sem lactose no cardápio. Use o filtro “Sem lactose” na seção do cardápio para ver apenas essas opções.</p></details>
+          <details class="faq-item reveal"><summary>Como funciona o pagamento?</summary><p>Você combina direto no WhatsApp. Aceitamos Pix, dinheiro e cartão na entrega, conforme disponibilidade no dia.</p></details>
+          <details class="faq-item reveal"><summary>Preciso pedir com antecedência?</summary><p>Sim, o pedido é confirmado pelo WhatsApp com a data de entrega disponível. Fale com a gente para saber o prazo atual.</p></details>
+        </div>
+      </section>
+
+      <section class="about" id="sobre">
+        <div class="about-visual reveal" role="img" aria-label="Marmita caseira preparada na nossa cozinha, em Porto Alegre"></div>
+        <div class="about-copy">
+          <p class="eyebrow reveal">Um pouco da nossa cozinha</p>
+          <h2 class="reveal">Tem coisa melhor que abrir a geladeira e já saber o que vai comer?</h2>
+          <p class="reveal">A Marmitas POA é uma cozinha caseira de Porto Alegre. A gente faz do jeito que faria para a nossa casa: panela no fogo, tempero de verdade, porção generosa — e nenhuma receita que nasceu em linha de montagem.</p>
+          <p class="reveal">Quem é daqui sabe: comida boa é comida feita com calma. A nossa parte é essa — deixar o seu almoço pronto, congelado no ponto, para você aquecer e comer com vontade em qualquer dia da semana.</p>
+          <div class="contact-list reveal">
+            <a data-link-whatsapp href="https://wa.me/5551993560070" target="_blank" rel="noreferrer"><span>WhatsApp</span><b>(51) 99356-0070</b></a>
+            <a data-link-instagram href="https://instagram.com/marmitaspoa" target="_blank" rel="noreferrer"><span>Instagram</span><b>@marmitaspoa</b></a>
+            <a href="#cardapio"><span>Entrega</span><b>Porto Alegre · combos com frete grátis</b></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="brand">
+        <span class="brand-mark" data-logo>POA</span>
+        <span class="brand-text"><strong data-loja-nome>Marmitas</strong><small data-loja-slogan>Caseira, de Porto Alegre</small></span>
+      </div>
+      <p>Cozinha caseira em Porto Alegre. Cardápio e preços podem mudar a cada semana.</p>
+      <div class="footer-links"><a href="#inicio">Voltar ao topo ↑</a></div>
+    </footer>
+
+    <div class="mobile-bar" id="mobileBar" hidden>
+      <div class="bar-info"><small id="barCount">0 itens</small><b id="barTotal">R$ 0,00</b></div>
+      <button class="btn btn-primary" id="barButton" type="button">Ver pedido</button>
+    </div>
+
+    <div class="overlay" id="overlay" hidden></div>
+
+    <aside class="drawer" id="cartDrawer" aria-label="Meu pedido" aria-modal="true" role="dialog" hidden>
+      <header class="drawer-head">
+        <div><p class="eyebrow">Seu pedido</p><h2>Vai dar bom.</h2></div>
+        <button class="icon-btn" id="closeCart" type="button" aria-label="Fechar pedido">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <div class="drawer-body">
+        <div class="cart-items" id="cartItems"></div>
+
+        <form class="checkout" id="checkoutForm" novalidate>
+          <p class="checkout-title">Seus dados para entrega</p>
+          <div class="field">
+            <label for="fieldName">Nome</label>
+            <input id="fieldName" name="name" type="text" placeholder="Como podemos te chamar?" autocomplete="name" />
+            <small class="field-error" data-error-for="fieldName"></small>
+          </div>
+          <div class="field">
+            <label for="fieldPhone">WhatsApp</label>
+            <input id="fieldPhone" name="phone" type="tel" inputmode="numeric" placeholder="(51) 99999-9999" autocomplete="tel" maxlength="15" />
+            <small class="field-error" data-error-for="fieldPhone"></small>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="fieldNeighborhood">Bairro</label>
+              <input id="fieldNeighborhood" name="neighborhood" type="text" placeholder="Centro" autocomplete="address-level3" />
+              <small class="field-error" data-error-for="fieldNeighborhood"></small>
+            </div>
+            <div class="field">
+              <label for="fieldAddress">Endereço <span>(opcional)</span></label>
+              <input id="fieldAddress" name="address" type="text" placeholder="Rua e número" autocomplete="street-address" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="fieldNotes">Observações <span>(opcional)</span></label>
+            <textarea id="fieldNotes" name="notes" rows="2" placeholder="Trocar algum acompanhamento, ponto da carne, data desejada..."></textarea>
+          </div>
+        </form>
+
+        <div class="coupon">
+          <label for="couponInput">Cupom de desconto</label>
+          <div class="coupon-row">
+            <input id="couponInput" type="text" placeholder="Código do cupom" autocomplete="off" />
+            <button class="btn btn-ghost" id="applyCoupon" type="button">Aplicar</button>
+          </div>
+          <small class="coupon-feedback" id="couponFeedback" role="status"></small>
+        </div>
+      </div>
+
+      <footer class="drawer-foot">
+        <dl class="summary">
+          <div><dt>Subtotal</dt><dd id="cartSubtotal">R$ 0,00</dd></div>
+          <div><dt>Entrega</dt><dd id="cartShipping">Porto Alegre</dd></div>
+          <div class="summary-total"><dt>Total</dt><dd id="cartTotal">R$ 0,00</dd></div>
+        </dl>
+        <div class="discounts" id="cartDiscounts" hidden></div>
+        <p class="shipping-hint" id="shippingHint"></p>
+        <p class="minimum-hint" id="minimumHint" hidden></p>
+        <button class="btn btn-primary btn-block" id="sendOrder" type="button">Enviar pedido no WhatsApp</button>
+        <div class="drawer-foot-links">
+          <button id="repeatOrder" type="button" hidden>Repetir último pedido</button>
+          <button id="clearOrder" type="button">Limpar pedido</button>
+        </div>
+        <small class="drawer-note">Você confere tudo na conversa antes de fechar. Nenhum pagamento acontece no site.</small>
+      </footer>
+    </aside>
+
+    <div class="overlay" id="comboOverlay" hidden></div>
+
+    <aside class="combo-modal" id="comboModal" role="dialog" aria-modal="true" aria-labelledby="comboTitle" hidden>
+      <header class="combo-head">
+        <div>
+          <p class="eyebrow">Escolha os pratos</p>
+          <h2 id="comboTitle">Combo</h2>
+        </div>
+        <button class="icon-btn" id="closeCombo" type="button" aria-label="Fechar a escolha dos pratos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <div class="combo-progress">
+        <div class="combo-bar"><span id="comboBar"></span></div>
+        <p id="comboStatus" aria-live="polite"></p>
+      </div>
+
+      <div class="combo-tools">
+        <label class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm6-2 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <input id="comboSearch" type="search" placeholder="Buscar prato do combo" aria-label="Buscar prato do combo" autocomplete="off" />
+        </label>
+        <div class="combo-chips" id="comboFilters" role="group" aria-label="Filtrar pratos do combo"></div>
+      </div>
+
+      <div class="combo-items" id="comboDishes"></div>
+
+      <footer class="picker-foot">
+        <div class="combo-resumo">
+          <strong id="comboCount">0 de 0</strong>
+          <small id="comboHint"></small>
+        </div>
+        <div class="combo-acoes">
+          <button class="btn btn-ghost" id="comboClear" type="button">Limpar</button>
+          <button class="btn btn-primary" id="comboConfirm" type="button" disabled>Adicionar ao pedido</button>
+        </div>
+      </footer>
+    </aside>
+
+    <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+    <script src="dados.js" defer></script>
+    <script src="script.js" defer></script>
+  </body>
+</html>
