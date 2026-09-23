@@ -1514,7 +1514,17 @@ async function entrar() {
     dicaDoLogin("");
     mostrarPainel();
   } catch (erro) {
-    dicaDoLogin(erro.message);
+    // Navegador às vezes preenche com uma senha antiga: limpa para digitar de novo.
+    const senhaErrada = /senha incorreta/i.test(erro.message);
+    dicaDoLogin(
+      senhaErrada
+        ? `${erro.message}. Se o navegador preencheu sozinho, apague e digite de novo.`
+        : erro.message
+    );
+    if (senhaErrada) {
+      $("#senha").value = "";
+      $("#senha").focus();
+    }
   } finally {
     botao.disabled = false;
   }

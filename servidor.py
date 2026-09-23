@@ -43,6 +43,7 @@ import json
 import re
 import secrets
 import sqlite3
+import sys
 import threading
 import time
 import unicodedata
@@ -1030,12 +1031,35 @@ def main() -> None:
         const="",
         help="troca a senha do painel (sem valor, pergunta no terminal)",
     )
+    parser.add_argument(
+        "--testar-senha",
+        nargs="?",
+        const="",
+        help="confere se uma senha bate com a guardada, sem alterar nada",
+    )
     argumentos = parser.parse_args()
+
+    if argumentos.testar_senha is not None:
+        guardada = senha_guardada()
+        if not guardada:
+            print("Ainda não há senha definida (config.json sem senha).")
+            return
+        tentativa = argumentos.testar_senha or getpass.getpass("Senha para testar: ")
+        confere = conferir_senha(tentativa, guardada)
+        print("confere: é essa a senha do painel" if confere else "não confere: essa não é a senha guardada")
+        sys.exit(0 if confere else 1)
 
     if argumentos.definir_senha is not None:
         nova = argumentos.definir_senha or getpass.getpass("Nova senha do painel: ")
+        if not argumentos.definir_senha:
+            # Digitada no terminal não aparece na tela: confere a repetição para
+            # um erro de digitação não trancar o painel.
+            repetida = getpass.getpass("Repita a nova senha: ")
+            if nova != repetida:
+                print("As senhas não batem. Nada foi alterado.")
+                return
         if len(nova) < 8:
-            print("Use pelo menos 8 caracteres.")
+            print("Use pelo menos 8 caracteres. Nada foi alterado.")
             return
         definir_senha(nova)
         print(f"Senha do painel atualizada em {CONFIG.name}")
