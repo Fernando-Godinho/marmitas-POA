@@ -1008,6 +1008,17 @@ function buildMessage(data) {
 }
 
 /* ---------------------------------------------- webhook do pedido (API) */
+// Dinheiro nunca sai só como float. Junto de cada valor em reais vão os
+// centavos (inteiro), o valor em micros (inteiro, já pronto para plataformas
+// que pedem "valor × 1 000 000") e, no total, o texto em pt-BR ("66,70").
+// Motivo: quem converte reais multiplicando por 100 ou por 1 000 000 em ponto
+// flutuante erra (6.67 × 0,1 = 6.670000000000001; 2,01 × 1e6 =
+// 2009999.9999999998) e, lido como texto pt-BR (ponto = milhar), o erro vira
+// 6.670.000.000.000.001. Com centavo inteiro não existe esse resto.
+const centavos = (valor) => Math.round(Number(valor || 0) * 100);
+const micros = (valor) => centavos(valor) * 10000; // R$ 66,70 → 66700000
+const reaisTexto = (valor) => (centavos(valor) / 100).toFixed(2).replace(".", ",");
+
 // Mesmo pedido que vai para o WhatsApp, em JSON, para a automação registrar,
 // imprimir ou avisar a cozinha. Se o webhook cair, o checkout NÃO trava: o
 // cliente vai para o WhatsApp do mesmo jeito.
@@ -1031,8 +1042,10 @@ function montarPedido(data, mensagem) {
       categoria: linha.item.category || "",
       tamanho: linha.option.label,
       precoUnitario: arredondar(linha.option.price),
+      precoUnitarioCentavos: centavos(linha.option.price),
       quantidade: linha.qty,
       total: arredondar(linha.total),
+      totalCentavos: centavos(linha.total),
       pratos: (linha.pratos || []).map((prato) => {
         const escolhido = CATALOG.get(String(prato.id));
         return { id: String(prato.id), nome: escolhido ? escolhido.name : "", quantidade: prato.qtd };
@@ -1040,13 +1053,26 @@ function montarPedido(data, mensagem) {
     })),
     resumo: {
       subtotal: calculo.subtotal,
-      descontos: calculo.descontos.map((desconto) => ({ nome: desconto.nome, valor: desconto.valor })),
+      subtotalCentavos: centavos(calculo.subtotal),
+      descontos: calculo.descontos.map((desconto) => ({
+        nome: desconto.nome,
+        valor: desconto.valor,
+        valorCentavos: centavos(desconto.valor),
+      })),
       cupom: calculo.cupomAplicado
-        ? { codigo: calculo.cupomAplicado.codigo, valor: calculo.descontoCupom }
+        ? {
+            codigo: calculo.cupomAplicado.codigo,
+            valor: calculo.descontoCupom,
+            valorCentavos: centavos(calculo.descontoCupom),
+          }
         : null,
       entrega: calculo.entrega,
+      entregaCentavos: centavos(calculo.entrega),
       entregaGratis: calculo.freteGratis,
       total: calculo.total,
+      totalCentavos: centavos(calculo.total),
+      totalMicros: micros(calculo.total),
+      totalTexto: reaisTexto(calculo.total),
       moeda: "BRL",
     },
     mensagem: mensagem,
