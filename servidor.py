@@ -88,11 +88,15 @@ BLOQUEIO_SEGUNDOS = 5 * 60
 # O script.js monta os cartões com style="--bg: <cor>" via innerHTML, então
 # style-src precisa de 'unsafe-inline'. O que importa contra XSS é script-src:
 # só o próprio site e o único script inline do index.html, liberado por hash.
+# connect-src abre apenas o domínio do webhook que recebe os pedidos (n8n no
+# Easypanel) — sem isso o navegador bloqueia o fetch antes de abrir o WhatsApp.
+WEBHOOK_PEDIDOS_ORIGEM = "https://marmitaspoa-twenty.mvbdxo.easypanel.host"
 CSP_SITE = (
     "default-src 'self'; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; "
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
     "script-src 'self' 'sha256-WZRJfWvsnNCPcxzZwvyhovnZGqhZaC+8gPGPRbx6wTk='; "
-    "connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'"
+    f"connect-src 'self' {WEBHOOK_PEDIDOS_ORIGEM}; "
+    "base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'"
 )
 CSP_PAINEL = (
     "default-src 'self'; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; "

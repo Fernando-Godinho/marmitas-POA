@@ -36,6 +36,13 @@ const PEDIDO_MINIMO = Number(LOJA.pedidoMinimo) || 0;
 const CUPONS = DADOS.cupons || [];
 const PROMOCOES = DADOS.promocoes || [];
 
+// Todo pedido é enviado para este webhook antes de abrir o WhatsApp (automação
+// no Easypanel). Deixar a string vazia desliga o envio. O domínio também precisa
+// estar liberado no connect-src da CSP, em servidor.py, senão o navegador barra.
+const WEBHOOK_PEDIDOS =
+  "https://marmitaspoa-twenty.mvbdxo.easypanel.host/webhooks/workflows/22f80269-fb5b-4497-923b-03ca7f083bf2/69ef3ac3-0e44-45ba-97ee-699b949402cf";
+const WEBHOOK_TIMEOUT = 2500;
+
 const PHOTO = {
   thumb: LOJA.fotoPadraoThumb || "img/marmita-padrao-thumb.jpg",
   full: LOJA.fotoPadrao || "img/marmita-padrao.jpg",
@@ -1000,6 +1007,101 @@ function buildMessage(data) {
   return lines.join("\n");
 }
 
+/* ---------------------------------------------- webhook do pedido (API) */
+// Mesmo pedido que vai para o WhatsApp, em JSON, para a automação registrar,
+// imprimir ou avisar a cozinha. Se o webhook cair, o checkout NÃO trava: o
+// cliente vai para o WhatsApp do mesmo jeito.
+function montarPedido(data, mensagem) {
+  const calculo = calcular();
+  return {
+    evento: "pedido.novo",
+    enviadoEm: new Date().toISOString(),
+    origem: "site",
+    loja: LOJA.nome || "Marmitas POA",
+    cliente: {
+      nome: data.name,
+      whatsapp: data.phone,
+      bairro: data.neighborhood,
+      endereco: data.address || "",
+      observacoes: data.notes || "",
+    },
+    itens: calculo.linhas.map((linha) => ({
+      id: String(linha.item.id),
+      nome: linha.item.name,
+      categoria: linha.item.category || "",
+      tamanho: linha.option.label,
+      precoUnitario: arredondar(linha.option.price),
+      quantidade: linha.qty,
+      total: arredondar(linha.total),
+      pratos: (linha.pratos || []).map((prato) => {
+        const escolhido = CATALOG.get(String(prato.id));
+        return { id: String(prato.id), nome: escolhido ? escolhido.name : "", quantidade: prato.qtd };
+      }),
+    })),
+    resumo: {
+      subtotal: calculo.subtotal,
+      descontos: calculo.descontos.map((desconto) => ({ nome: desconto.nome, valor: desconto.valor })),
+      cupom: calculo.cupomAplicado
+        ? { codigo: calculo.cupomAplicado.codigo, valor: calculo.descontoCupom }
+        : null,
+      entrega: calculo.entrega,
+      entregaGratis: calculo.freteGratis,
+      total: calculo.total,
+      moeda: "BRL",
+    },
+    mensagem: mensagem,
+  };
+}
+
+// Envia e espera no máximo WEBHOOK_TIMEOUT ms — nunca deixa o cliente preso.
+function enviarPedidoAoWebhook(pedido) {
+  if (!WEBHOOK_PEDIDOS) return Promise.resolve(false);
+
+  const corpo = JSON.stringify(pedido);
+  const controle = new AbortController();
+  const relogio = setTimeout(() => controle.abort(), WEBHOOK_TIMEOUT);
+
+  const encerrar = () => clearTimeout(relogio);
+
+  // Sem poder ler a resposta de outro domínio, o importante é o POST ter saído.
+  const semResposta = () =>
+    fetch(WEBHOOK_PEDIDOS, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: corpo,
+      keepalive: true,
+    })
+      .then(() => true)
+      .catch(() => false);
+
+  return fetch(WEBHOOK_PEDIDOS, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: corpo,
+    signal: controle.signal,
+    keepalive: true,
+    credentials: "omit",
+  })
+    .then((resposta) => (resposta.ok ? true : Promise.reject(new Error(`HTTP ${resposta.status}`))))
+    .catch((erro) => {
+      // Só reenvia quando o navegador não conseguiu ENTREGAR (rede/CORS). Uma
+      // resposta HTTP de erro quer dizer que o webhook já recebeu o pedido —
+      // reenviar aqui duplicaria o pedido no sistema de lá.
+      if (erro && erro.name === "TypeError") {
+        console.warn("Webhook do pedido não pôde ser entregue, tentando envio simples:", erro);
+        return semResposta();
+      }
+      console.warn("Webhook do pedido respondeu com erro:", erro);
+      return false;
+    })
+    .then((ok) => {
+      encerrar();
+      if (!ok) console.warn("Webhook do pedido não recebeu os dados.");
+      return ok;
+    });
+}
+
 function sendOrder() {
   if (!state.cart.length) {
     toast("Seu pedido está vazio");
@@ -1032,8 +1134,35 @@ function sendOrder() {
   }
   store(STORAGE.last, state.cart);
   persistForm();
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage(data))}`, "_blank", "noopener");
-  toast("Pedido pronto no WhatsApp");
+
+  const mensagem = buildMessage(data);
+  const urlWhats = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+
+  // A aba abre agora, ainda dentro do clique: depois do await o bloqueador de
+  // pop-up barraria. O endereço é preenchido quando o webhook terminar.
+  let aba = null;
+  try {
+    aba = window.open("about:blank", "_blank");
+  } catch (erro) {
+    aba = null;
+  }
+
+  toast("Enviando o pedido…");
+  enviarPedidoAoWebhook(montarPedido(data, mensagem)).then(() => {
+    if (aba && !aba.closed) {
+      aba.location.href = urlWhats;
+      // O vínculo com o site só é cortado DEPOIS da troca de endereço: com
+      // opener nulo, o navegador recusa navegar a aba "about:blank".
+      try {
+        aba.opener = null;
+      } catch (erro) {
+        /* nada a fazer: o pedido já está no WhatsApp */
+      }
+    } else {
+      window.open(urlWhats, "_blank", "noopener");
+    }
+    toast("Pedido pronto no WhatsApp");
+  });
 }
 
 function repeatLastOrder() {
