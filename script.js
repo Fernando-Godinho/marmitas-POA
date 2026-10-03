@@ -1517,11 +1517,6 @@ function aplicarDadosDaLoja() {
   const marca = $(".topbar .brand");
   if (marca) marca.setAttribute("aria-label", `${LOJA.nome || "Marmitas POA"}, início`);
 
-  if (USANDO_RASCUNHO) {
-    const faixa = $("#rascunho");
-    if (faixa) faixa.hidden = false;
-  }
-
   document.title = `${LOJA.nome || "Marmitas POA"} | ${LOJA.slogan || "Comida de verdade"}`;
 }
 

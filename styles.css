@@ -905,15 +905,6 @@ em { font-style: normal; color: var(--orange); }
   font-size: 12px;
   font-weight: 600;
 }
-.rascunho-bar {
-  padding: 9px var(--pad-x);
-  background: var(--yellow);
-  color: var(--ink);
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
-}
-.rascunho-bar a { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Cupom e descontos -------------------------------------------------------- */
 .coupon { margin: 4px 0 18px; }
